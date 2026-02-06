@@ -64,13 +64,14 @@
             position: fixed; bottom: 60px; right: 20px;
             font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #1e293b; z-index: 50;
         }
+        #legend, #controls { transition: opacity 0.3s ease; }
     </style>
 </head>
 <body>
 
 <div id="header">
     <h1><span>Factoría</span> Estudio</h1>
-    <div class="sub">network graph · 37 cursos · 9 áreas · scroll zoom · arrastra para mover</div>
+    <div class="sub" id="headerSub">network graph · 37 cursos · 9 áreas · scroll zoom · doble-click categoría para explorar</div>
 </div>
 
 <div id="tooltip">
@@ -1247,6 +1248,16 @@ function findNodeAt(sx, sy) {
 }
 
 canvas.addEventListener('mousedown', e => {
+    if (diveDir !== 0) return; // transitioning
+
+    if (diveProgress >= 1) {
+        // Inner world — only panning (nodes are orbital)
+        isPanning = true;
+        panStart = { x: e.clientX, y: e.clientY };
+        document.body.classList.add('dragging');
+        return;
+    }
+
     const nd = findNodeAt(e.clientX, e.clientY);
     if (nd) {
         dragNode = nd;
@@ -1274,15 +1285,37 @@ canvas.addEventListener('mousemove', e => {
     if (isPanning) {
         const dx = e.clientX - panStart.x;
         const dy = e.clientY - panStart.y;
-        cam.x -= dx / cam.zoom;
-        cam.y -= dy / cam.zoom;
-        targetCam.x = cam.x;
-        targetCam.y = cam.y;
+        if (diveProgress >= 1) {
+            innerCam.x -= dx / innerCam.zoom;
+            innerCam.y -= dy / innerCam.zoom;
+        } else {
+            cam.x -= dx / cam.zoom;
+            cam.y -= dy / cam.zoom;
+            targetCam.x = cam.x;
+            targetCam.y = cam.y;
+        }
         panStart = { x: e.clientX, y: e.clientY };
         return;
     }
 
-    // Hover detection
+    // Inner world hover
+    if (diveProgress >= 1) {
+        const nd = findInnerNodeAt(e.clientX, e.clientY);
+        if (nd !== innerHovered) {
+            innerHovered = nd;
+            canvas.style.cursor = nd ? 'pointer' : 'grab';
+            if (nd) {
+                updateTooltip(nd, e.clientX, e.clientY);
+            } else {
+                document.getElementById('tooltip').classList.remove('visible');
+            }
+        } else if (nd) {
+            updateTooltip(nd, e.clientX, e.clientY);
+        }
+        return;
+    }
+
+    // Network hover detection
     const nd = findNodeAt(e.clientX, e.clientY);
     if (nd !== hoveredNode) {
         hoveredNode = nd;
@@ -1304,6 +1337,7 @@ canvas.addEventListener('mouseup', () => {
 
 canvas.addEventListener('mouseleave', () => {
     hoveredNode = null;
+    innerHovered = null;
     document.getElementById('tooltip').classList.remove('visible');
     isPanning = false;
     dragNode = null;
@@ -1312,8 +1346,25 @@ canvas.addEventListener('mouseleave', () => {
 
 canvas.addEventListener('wheel', e => {
     e.preventDefault();
+    if (diveDir !== 0) return; // transitioning
+
     const zoomFactor = e.deltaY > 0 ? 0.92 : 1.08;
-    const newZoom = Math.max(0.2, Math.min(4, cam.zoom * zoomFactor));
+
+    if (diveProgress >= 1) {
+        // Inner world zoom toward mouse
+        const newZoom = Math.max(0.4, Math.min(3, innerCam.zoom * zoomFactor));
+        const wp = innerScreenToWorld(e.clientX, e.clientY);
+        innerCam.zoom = newZoom;
+        const wpAfter = innerScreenToWorld(e.clientX, e.clientY);
+        innerCam.x -= (wpAfter.x - wp.x);
+        innerCam.y -= (wpAfter.y - wp.y);
+
+        // Zoom out far enough → dive out
+        if (innerCam.zoom <= 0.42) diveOut();
+        return;
+    }
+
+    const newZoom = Math.max(0.2, Math.min(6, cam.zoom * zoomFactor));
 
     // Zoom toward mouse
     const wp = screenToWorld(e.clientX, e.clientY);
@@ -1324,17 +1375,30 @@ canvas.addEventListener('wheel', e => {
     targetCam.x = cam.x;
     targetCam.y = cam.y;
     targetCam.zoom = cam.zoom;
+
+    // Auto-dive: zoom in very close on a category node → dive in
+    if (cam.zoom > 4.5) {
+        const nd = findNodeAt(e.clientX, e.clientY);
+        if (nd && nd.type === 'category') {
+            diveInto(nd);
+        }
+    }
 }, { passive: false });
 
 // Touch support
 let lastTouchDist = 0;
 let touchPanStart = null;
 canvas.addEventListener('touchstart', e => {
+    if (diveDir !== 0) { e.preventDefault(); return; }
     if (e.touches.length === 1) {
         const t = e.touches[0];
-        const nd = findNodeAt(t.clientX, t.clientY);
-        if (nd) { dragNode = nd; dragNode.pinned = true; }
-        else { isPanning = true; touchPanStart = { x: t.clientX, y: t.clientY }; }
+        if (diveProgress >= 1) {
+            isPanning = true; touchPanStart = { x: t.clientX, y: t.clientY };
+        } else {
+            const nd = findNodeAt(t.clientX, t.clientY);
+            if (nd) { dragNode = nd; dragNode.pinned = true; }
+            else { isPanning = true; touchPanStart = { x: t.clientX, y: t.clientY }; }
+        }
     } else if (e.touches.length === 2) {
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
@@ -1352,8 +1416,13 @@ canvas.addEventListener('touchmove', e => {
         } else if (isPanning && touchPanStart) {
             const dx = t.clientX - touchPanStart.x;
             const dy = t.clientY - touchPanStart.y;
-            cam.x -= dx / cam.zoom; cam.y -= dy / cam.zoom;
-            targetCam.x = cam.x; targetCam.y = cam.y;
+            if (diveProgress >= 1) {
+                innerCam.x -= dx / innerCam.zoom;
+                innerCam.y -= dy / innerCam.zoom;
+            } else {
+                cam.x -= dx / cam.zoom; cam.y -= dy / cam.zoom;
+                targetCam.x = cam.x; targetCam.y = cam.y;
+            }
             touchPanStart = { x: t.clientX, y: t.clientY };
         }
     } else if (e.touches.length === 2) {
@@ -1362,8 +1431,13 @@ canvas.addEventListener('touchmove', e => {
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (lastTouchDist > 0) {
             const scale = dist / lastTouchDist;
-            cam.zoom = Math.max(0.2, Math.min(4, cam.zoom * scale));
-            targetCam.zoom = cam.zoom;
+            if (diveProgress >= 1) {
+                innerCam.zoom = Math.max(0.4, Math.min(3, innerCam.zoom * scale));
+                if (innerCam.zoom <= 0.42) diveOut();
+            } else {
+                cam.zoom = Math.max(0.2, Math.min(6, cam.zoom * scale));
+                targetCam.zoom = cam.zoom;
+            }
         }
         lastTouchDist = dist;
     }
@@ -1375,10 +1449,21 @@ canvas.addEventListener('touchend', e => {
     isPanning = false; touchPanStart = null; lastTouchDist = 0;
 });
 
-// Double-click to focus
+// Double-click to focus / dive
 canvas.addEventListener('dblclick', e => {
+    if (diveDir !== 0) return; // transitioning
+
+    if (diveProgress >= 1) {
+        // In inner world — double-click empty space to dive out
+        const nd = findInnerNodeAt(e.clientX, e.clientY);
+        if (!nd) diveOut();
+        return;
+    }
+
     const nd = findNodeAt(e.clientX, e.clientY);
-    if (nd) {
+    if (nd && nd.type === 'category') {
+        diveInto(nd);
+    } else if (nd) {
         targetCam.x = nd.x;
         targetCam.y = nd.y;
         targetCam.zoom = 2;
@@ -1537,10 +1622,331 @@ function shuffle() {
 }
 
 // ══════════════════════════════════════════════════
+//  DIVE SYSTEM (Google Maps-style zoom into worlds)
+// ══════════════════════════════════════════════════
+let diveNode = null;        // category node we're inside
+let diveProgress = 0;       // 0=network, 1=inner world
+let diveDir = 0;            // 1=diving in, -1=diving out, 0=idle
+let innerNodes = [];        // course nodes in inner world
+let innerCam = { x: 0, y: 0, zoom: 1 };
+let innerHovered = null;
+let innerDragNode = null;
+
+function diveInto(catNode) {
+    if (diveNode || diveDir !== 0) return;
+    if (tourRunning) stopTour();
+    diveNode = catNode;
+    diveDir = 1;
+    diveProgress = 0;
+    hoveredNode = null;
+    highlightCat = null;
+    document.getElementById('tooltip').classList.remove('visible');
+    document.querySelectorAll('.legend-item').forEach(it => it.classList.remove('dimmed'));
+
+    // Create inner world nodes
+    const courses = COURSES.filter(c => c.cat === catNode.catKey);
+    const count = courses.length;
+    innerNodes = courses.map((c, i) => {
+        const angle = (i / count) * Math.PI * 2 - Math.PI / 2;
+        const orbitR = 160 + count * 12;
+        return {
+            id: c.id, label: c.name, desc: c.desc,
+            catKey: c.cat, color: catNode.color,
+            x: Math.cos(angle) * orbitR,
+            y: Math.sin(angle) * orbitR,
+            radius: 22, phase: Math.random() * Math.PI * 2,
+            baseAngle: angle, orbitR,
+            type: 'course'
+        };
+    });
+    innerCam = { x: 0, y: 0, zoom: 1 };
+}
+
+function diveOut() {
+    if (!diveNode || diveDir !== 0) return;
+    diveDir = -1;
+}
+
+function innerWorldToScreen(wx, wy) {
+    return {
+        x: (wx - innerCam.x) * innerCam.zoom + W / 2,
+        y: (wy - innerCam.y) * innerCam.zoom + H / 2
+    };
+}
+function innerScreenToWorld(sx, sy) {
+    return {
+        x: (sx - W / 2) / innerCam.zoom + innerCam.x,
+        y: (sy - H / 2) / innerCam.zoom + innerCam.y
+    };
+}
+
+function getInnerDisplayPos(nd) {
+    const drift = Math.sin(time * 0.3 + nd.phase) * 8;
+    const driftY = Math.cos(time * 0.25 + nd.phase * 1.3) * 6;
+    return { x: nd.x + drift, y: nd.y + driftY };
+}
+
+function findInnerNodeAt(sx, sy) {
+    const wp = innerScreenToWorld(sx, sy);
+    let best = null, bestD = Infinity;
+    for (let i = innerNodes.length - 1; i >= 0; i--) {
+        const nd = innerNodes[i];
+        const dp = getInnerDisplayPos(nd);
+        const dx = wp.x - dp.x, dy = wp.y - dp.y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        const hitR = nd.radius * 1.5 / innerCam.zoom + 10 / innerCam.zoom;
+        if (d < hitR && d < bestD) { best = nd; bestD = d; }
+    }
+    return best;
+}
+
+function renderInnerWorld(alpha) {
+    if (!diveNode) return;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+
+    const [cr, cg, cb] = hexToRgb(diveNode.color);
+    const catKey = diveNode.catKey;
+
+    // Background
+    ctx.fillStyle = '#030712';
+    ctx.fillRect(0, 0, W, H);
+
+    // Category-colored nebula background
+    for (let i = 0; i < 4; i++) {
+        const nx = W * (0.2 + i * 0.2) + Math.sin(time * 0.1 + i) * 40;
+        const ny = H * (0.3 + (i % 2) * 0.4) + Math.cos(time * 0.08 + i) * 30;
+        const nr = W * (0.25 + i * 0.05);
+        const grad = ctx.createRadialGradient(nx, ny, 0, nx, ny, nr);
+        grad.addColorStop(0, `rgba(${cr},${cg},${cb},${0.05 - i * 0.01})`);
+        grad.addColorStop(1, 'transparent');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, W, H);
+    }
+
+    // Full-screen pattern (category's pattern as background)
+    ctx.globalAlpha = alpha * 0.12;
+    drawPattern(catKey, ctx, W / 2, H / 2, Math.min(W, H) * 0.45, time, diveNode.phase);
+    ctx.globalAlpha = alpha;
+
+    // Stars in inner world
+    for (let i = 0; i < 80; i++) {
+        const sx = ((i * 137.5 + 50) % W);
+        const sy = ((i * 97.3 + 30) % H);
+        const twk = 0.4 + 0.6 * Math.sin(time * 0.5 + i * 0.7);
+        ctx.globalAlpha = alpha * 0.3 * twk;
+        ctx.fillStyle = `rgb(${cr},${cg},${cb})`;
+        ctx.beginPath();
+        ctx.arc(sx, sy, 1, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.globalAlpha = alpha;
+
+    // Category title (subtle, since header already shows info)
+    ctx.font = '300 28px Inter';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = `rgba(${cr},${cg},${cb},0.15)`;
+    ctx.fillText(CATEGORIES[catKey].name, W / 2, H / 2);
+    ctx.font = '400 11px "JetBrains Mono"';
+    ctx.fillStyle = 'rgba(148,163,184,0.25)';
+    ctx.fillText(`${innerNodes.length} cursos`, W / 2, H / 2 + 22);
+
+    // Connections from center to courses
+    innerNodes.forEach(nd => {
+        const sp = innerWorldToScreen(nd.x, nd.y);
+        ctx.beginPath();
+        ctx.moveTo(W / 2, H / 2);
+        ctx.lineTo(sp.x, sp.y);
+        ctx.strokeStyle = `rgba(${cr},${cg},${cb},0.06)`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Edge particle
+        const tt = ((time * 0.15 + nd.phase * 0.3) % 1);
+        const px = W / 2 + (sp.x - W / 2) * tt;
+        const py = H / 2 + (sp.y - H / 2) * tt;
+        ctx.beginPath();
+        ctx.arc(px, py, 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${cr},${cg},${cb},${0.3 * (0.5 + 0.5 * Math.sin(tt * Math.PI))})`;
+        ctx.fill();
+    });
+
+    // Central glow (category hub representation)
+    const centerGlow = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, 60);
+    centerGlow.addColorStop(0, `rgba(${cr},${cg},${cb},0.15)`);
+    centerGlow.addColorStop(1, 'transparent');
+    ctx.fillStyle = centerGlow;
+    ctx.beginPath();
+    ctx.arc(W/2, H/2, 60, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Pulse waves from center
+    for (let p = 0; p < 2; p++) {
+        const t = ((time * 0.2 + p * 0.5) % 2) / 2;
+        if (t > 1) continue;
+        const pr = 30 + t * 200;
+        ctx.beginPath();
+        ctx.arc(W/2, H/2, pr, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(${cr},${cg},${cb},${(1-t) * 0.1})`;
+        ctx.lineWidth = (1 - t) * 2;
+        ctx.stroke();
+    }
+
+    // Course nodes — gentle orbital drift
+    innerNodes.forEach(nd => {
+        const drift = Math.sin(time * 0.3 + nd.phase) * 8;
+        const driftY = Math.cos(time * 0.25 + nd.phase * 1.3) * 6;
+        const displayX = nd.x + drift;
+        const displayY = nd.y + driftY;
+        const sp = innerWorldToScreen(displayX, displayY);
+        const r = nd.radius * innerCam.zoom;
+        const isHov = nd === innerHovered;
+        const drawR = isHov ? r * 1.15 : r;
+
+        // Pulse wave per course
+        const pt = ((time * 0.25 + nd.phase) % 1.8) / 1.8;
+        if (pt < 1) {
+            ctx.beginPath();
+            ctx.arc(sp.x, sp.y, drawR * (1.3 + pt * 2.5), 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(${cr},${cg},${cb},${(1-pt) * 0.1})`;
+            ctx.lineWidth = (1 - pt) * 1.5;
+            ctx.stroke();
+        }
+
+        // Glow
+        const gGrad = ctx.createRadialGradient(sp.x, sp.y, drawR * 0.3, sp.x, sp.y, drawR * 2.5);
+        gGrad.addColorStop(0, `rgba(${cr},${cg},${cb},${isHov ? 0.15 : 0.05})`);
+        gGrad.addColorStop(1, 'transparent');
+        ctx.fillStyle = gGrad;
+        ctx.beginPath();
+        ctx.arc(sp.x, sp.y, drawR * 2.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Sphere body
+        const dr = Math.max(cr-50,0), dg = Math.max(cg-50,0), db = Math.max(cb-50,0);
+        const lr = Math.min(cr+60,255), lg = Math.min(cg+60,255), lb = Math.min(cb+60,255);
+        const la = time * 0.2 + nd.phase;
+        const lx = Math.cos(la) * 0.3, ly = Math.sin(la) * 0.3;
+        const bGrad = ctx.createRadialGradient(sp.x+lx*drawR, sp.y+ly*drawR, drawR*0.05, sp.x+drawR*0.05, sp.y+drawR*0.05, drawR*1.1);
+        bGrad.addColorStop(0, `rgb(${lr},${lg},${lb})`);
+        bGrad.addColorStop(0.4, diveNode.color);
+        bGrad.addColorStop(1, `rgb(${dr},${dg},${db})`);
+        ctx.beginPath();
+        ctx.arc(sp.x, sp.y, drawR, 0, Math.PI * 2);
+        ctx.fillStyle = bGrad;
+        ctx.fill();
+
+        // Internal pattern
+        if (drawR > 8) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(sp.x, sp.y, drawR * 0.88, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.globalAlpha = alpha * (isHov ? 0.5 : 0.25);
+            drawPattern(catKey, ctx, sp.x, sp.y, drawR, time, nd.phase);
+            ctx.globalAlpha = alpha;
+            ctx.restore();
+        }
+
+        // Rim + specular
+        ctx.beginPath();
+        ctx.arc(sp.x, sp.y, drawR, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(${lr},${lg},${lb},${isHov ? 0.35 : 0.12})`;
+        ctx.lineWidth = Math.max(1, drawR * 0.06);
+        ctx.stroke();
+
+        const specX = sp.x + Math.cos(la) * drawR * 0.3;
+        const specY = sp.y + Math.sin(la) * drawR * 0.3;
+        const sGrad = ctx.createRadialGradient(specX, specY, 0, specX, specY, drawR * 0.3);
+        sGrad.addColorStop(0, 'rgba(255,255,255,0.4)');
+        sGrad.addColorStop(0.5, 'rgba(255,255,255,0.05)');
+        sGrad.addColorStop(1, 'transparent');
+        ctx.fillStyle = sGrad;
+        ctx.beginPath();
+        ctx.arc(specX, specY, drawR * 0.3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Label (always visible in inner world)
+        const fontSize = Math.max(11, 13 * innerCam.zoom);
+        const labelY = sp.y + drawR + fontSize + 6;
+        ctx.font = `500 ${fontSize}px Inter`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const tw = ctx.measureText(nd.label).width;
+        ctx.fillStyle = 'rgba(3,7,18,0.85)';
+        roundRect(ctx, sp.x - tw/2 - 6, labelY - fontSize/2 - 3, tw + 12, fontSize + 6, 5);
+        ctx.fill();
+        ctx.fillStyle = isHov ? '#f1f5f9' : '#cbd5e1';
+        ctx.fillText(nd.label, sp.x, labelY);
+
+        // Description on hover
+        if (isHov && nd.desc) {
+            const descY = labelY + fontSize + 10;
+            ctx.font = `400 ${Math.max(10, 11 * innerCam.zoom)}px Inter`;
+            const dtw = Math.min(ctx.measureText(nd.desc).width, 220);
+            ctx.fillStyle = 'rgba(3,7,18,0.9)';
+            roundRect(ctx, sp.x - dtw/2 - 8, descY - 8, dtw + 16, 22, 5);
+            ctx.fill();
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText(nd.desc.length > 45 ? nd.desc.slice(0, 42) + '...' : nd.desc, sp.x, descY + 3);
+        }
+    });
+
+    // Vignette
+    const vig = ctx.createRadialGradient(W/2, H/2, W*0.2, W/2, H/2, W*0.75);
+    vig.addColorStop(0, 'transparent');
+    vig.addColorStop(1, `rgba(${Math.floor(cr*0.1)},${Math.floor(cg*0.1)},${Math.floor(cb*0.1)},0.6)`);
+    ctx.fillStyle = vig;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.restore();
+}
+
+// ══════════════════════════════════════════════════
 //  ANIMATION LOOP
 // ══════════════════════════════════════════════════
 function animate(ts) {
     time = ts / 1000;
+
+    // Dive transition
+    if (diveDir === 1) {
+        diveProgress = Math.min(1, diveProgress + 0.02);
+        if (diveProgress >= 1) diveDir = 0;
+        // Zoom camera into the category node (Google Maps effect)
+        if (diveNode) {
+            targetCam.x = diveNode.x;
+            targetCam.y = diveNode.y;
+            targetCam.zoom = 1 + diveProgress * 5;
+        }
+    } else if (diveDir === -1) {
+        diveProgress = Math.max(0, diveProgress - 0.025);
+        if (diveProgress <= 0) {
+            diveDir = 0; diveNode = null; innerNodes = [];
+            innerHovered = null;
+            resetView();
+        }
+    }
+
+    // UI visibility during dive
+    const legendEl = document.getElementById('legend');
+    const controlsEl = document.getElementById('controls');
+    const subEl = document.getElementById('headerSub');
+    if (diveProgress > 0) {
+        const fade = 1 - diveProgress;
+        legendEl.style.opacity = fade;
+        legendEl.style.pointerEvents = diveProgress > 0.5 ? 'none' : '';
+        controlsEl.style.opacity = fade;
+        controlsEl.style.pointerEvents = diveProgress > 0.5 ? 'none' : '';
+        if (diveNode && diveProgress >= 1) {
+            subEl.textContent = `${CATEGORIES[diveNode.catKey].name} · ${innerNodes.length} cursos · doble-click para volver · scroll zoom`;
+        }
+    } else {
+        legendEl.style.opacity = 1;
+        legendEl.style.pointerEvents = '';
+        controlsEl.style.opacity = 1;
+        controlsEl.style.pointerEvents = '';
+        subEl.textContent = 'network graph · 37 cursos · 9 áreas · scroll zoom · doble-click categoría para explorar';
+    }
 
     // Smooth camera
     cam.x += (targetCam.x - cam.x) * 0.06;
@@ -1548,7 +1954,20 @@ function animate(ts) {
     cam.zoom += (targetCam.zoom - cam.zoom) * 0.06;
 
     simulate();
-    render();
+
+    if (diveProgress <= 0) {
+        render();
+    } else if (diveProgress >= 1) {
+        renderInnerWorld(1);
+    } else {
+        // Blend: render network fading out, inner world fading in
+        const ease = diveProgress * diveProgress * (3 - 2 * diveProgress); // smoothstep
+        ctx.globalAlpha = 1 - ease * 0.3;
+        render();
+        ctx.globalAlpha = 1;
+        renderInnerWorld(ease);
+    }
+
     requestAnimationFrame(animate);
 }
 
