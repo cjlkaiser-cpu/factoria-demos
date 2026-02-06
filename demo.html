@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Factoria Estudio - Demo Iconos</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="fotografia/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="fotografia/apple-touch-icon.png">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #FAF7F0;
+      color: #3A2E22;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #5C4A33 0%, #8B6E4E 50%, #A08868 100%);
+      color: #FAF7F0;
+      padding: 3rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><circle cx="30" cy="30" r="1.5" fill="rgba(255,255,255,0.08)"/></svg>');
+      pointer-events: none;
+    }
+    header h1 {
+      font-size: 2.8rem;
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    header h1 strong { font-weight: 700; }
+    header p {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ── Nav ── */
+    nav {
+      background: #fff;
+      border-bottom: 2px solid #E8E0D4;
+      padding: 0.8rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    nav a {
+      text-decoration: none;
+      color: #5C4A33;
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      white-space: nowrap;
+      border: 1.5px solid transparent;
+    }
+    nav a:hover {
+      background: #F0E8D8;
+      border-color: #C4A882;
+    }
+    nav a.active {
+      background: #5C4A33;
+      color: #fff;
+    }
+
+    /* ── Sections ── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+
+    section {
+      padding: 3rem 0 2rem;
+      border-bottom: 1px solid #E8E0D4;
+    }
+    section:last-child { border-bottom: none; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .section-header h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #5C4A33;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .section-header .badge {
+      background: #C4A882;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.7rem;
+      border-radius: 1rem;
+      font-weight: 600;
+    }
+
+    /* ── Icon Grid ── */
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .icon-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 1.5px solid #E8E0D4;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .icon-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 60%, rgba(196,168,130,0.08));
+      pointer-events: none;
+    }
+    .icon-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(92,74,51,0.12);
+      border-color: #C4A882;
+    }
+    .icon-card img {
+      width: 96px;
+      height: 96px;
+      object-fit: contain;
+      margin-bottom: 1rem;
+      transition: transform 0.3s;
+    }
+    .icon-card:hover img {
+      transform: scale(1.08);
+    }
+    .icon-card h3 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #5C4A33;
+      margin-bottom: 0.3rem;
+    }
+    .icon-card p {
+      font-size: 0.75rem;
+      color: #8B7355;
+    }
+
+    /* ── Standalone row ── */
+    .standalone-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1.2rem;
+    }
+    .standalone-grid .icon-card { padding: 1.2rem 0.8rem; }
+    .standalone-grid .icon-card img { width: 72px; height: 72px; }
+
+    /* ── Size Demo ── */
+    .size-demo {
+      margin-top: 3rem;
+      padding: 2rem 0;
+    }
+    .size-demo h2 {
+      font-size: 1.4rem;
+      color: #5C4A33;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .sizes-row {
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .size-item {
+      text-align: center;
+    }
+    .size-item img {
+      display: block;
+      margin: 0 auto 0.5rem;
+      border: 1px dashed #C4A882;
+      border-radius: 4px;
+    }
+    .size-item span {
+      font-size: 0.7rem;
+      color: #8B7355;
+      font-family: monospace;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: #5C4A33;
+      color: #C4A882;
+      text-align: center;
+      padding: 2rem;
+      margin-top: 2rem;
+      font-size: 0.85rem;
+    }
+    footer strong { color: #FAF7F0; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      header h1 { font-size: 1.8rem; }
+      .icon-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+      .icon-card img { width: 72px; height: 72px; }
+      nav { justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1><strong>Factoria</strong> Estudio</h1>
+  <p>La escuela de artes, tecnologia y emprendimiento</p>
+</header>
+
+<nav>
+  <a href="#cine" class="active">Cine</a>
+  <a href="#danza">Danza</a>
+  <a href="#plastica">Plastica</a>
+  <a href="#robotica">Robotica</a>
+  <a href="#hacking">Hacking</a>
+  <a href="#emprendimiento">Emprendimiento</a>
+  <a href="#teatro">Teatro</a>
+  <a href="#otras">Otras</a>
+  <a href="#sizes">Tamanios</a>
+</nav>
+
+<div class="container">
+
+  <!-- CINE -->
+  <section id="cine">
+    <div class="section-header">
+      <h2>Cine</h2>
+      <span class="badge">4 cursos</span>
+    </div>
+    <div class="icon-grid">
+      <div class="icon-card">
+        <img src="cine_rodaje-claqueta/icon-128x128.png" alt="Rodaje y Claqueta">
+        <h3>Rodaje y Claqueta</h3>
+        <p>Tecnicas de grabacion y direccion</p>
+      </div>
+      <div class="icon-card">
+        <img src="cine_guion-storyboard/icon-128x128.png" alt="Guion y Storyboard">
+        <h3>Guion y Storyboard</h3>
+        <p>Escritura y planificacion visual</p>
+      </div>
+      <div class="icon-card">
+        <img src="cine_edicion-montaje/icon-128x128.png" alt="Edicion y Montaje">
+        <h3>Edicion y Montaje</h3>
+        <p>Postproduccion y edicion digital</p>
+      </div>
+      <div class="icon-card">
+        <img src="cine_sonido-efectos/icon-128x128.png" alt="Sonido y Efectos">
+        <h3>Sonido y Efectos</h3>
+        <p>Diseno sonoro y efectos especiales</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DANZA -->
+  <section id="danza">
+    <div class="section-header">
+      <h2>Danza</h2>
+      <span class="badge">4 cursos</span>
+    </div>
+    <div class="icon-grid">
+      <div class="icon-card">
+        <img src="danza_clasica/icon-128x128.png" alt="Clasica">
+        <h3>Clasica</h3>
+        <p>Ballet clasico y tecnica de puntas</p>
+      </div>
+      <div class="icon-card">
+        <img src="danza_moderno/icon-128x128.png" alt="Moderno">
+        <h3>Moderno</h3>
+        <p>Danza contemporanea y expresion</p>
+      </div>
+      <div class="icon-card">
+        <img src="danza_flamenco-espanola/icon-128x128.png" alt="Flamenco y Espanola">
+        <h3>Flamenco y Espanola</h3>
+        <p>Flamenco, castanuelas y abanico</p>
+      </div>
+      <div class="icon-card">
+        <img src="danza_ballet-adultos/icon-128x128.png" alt="Ballet Adultos">
+        <h3>Ballet Adultos</h3>
+        <p>Clases de ballet para mayores</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLASTICA -->
+  <section id="plastica">
+    <div class="section-header">
+      <h2>Plastica</h2>
+      <span class="badge">4 cursos</span>
+    </div>
+    <div class="icon-grid">
+      <div class="icon-card">
+        <img src="plastica_dibujo-boceto/icon-128x128.png" alt="Dibujo y Boceto">
+        <h3>Dibujo y Boceto</h3>
+        <p>Tecnicas de dibujo y composicion</p>
+      </div>
+      <div class="icon-card">
+        <img src="plastica_pintura-color/icon-128x128.png" alt="Pintura y Color">
+        <h3>Pintura y Color</h3>
+        <p>Oleo, acuarela y teoria del color</p>
+      </div>
+      <div class="icon-card">
+        <img src="plastica_escultura-modelado/icon-128x128.png" alt="Escultura y Modelado">
+        <h3>Escultura y Modelado</h3>
+        <p>Modelado en arcilla y talla</p>
+      </div>
+      <div class="icon-card">
+        <img src="plastica_atrezo-decoracion/icon-128x128.png" alt="Atrezo y Decoracion">
+        <h3>Atrezo y Decoracion</h3>
+        <p>Creacion de objetos escenico</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROBOTICA -->
+  <section id="robotica">
+    <div class="section-header">
+      <h2>Robotica</h2>
+      <span class="badge">4 cursos</span>
+    </div>
+    <div class="icon-grid">
+      <div class="icon-card">
+        <img src="robotica_6-7/icon-128x128.png" alt="Robotica 6-7">
+        <h3>Robotica 6-7</h3>
+        <p>Introduccion para los mas pequenos</p>
+      </div>
+      <div class="icon-card">
+        <img src="robotica_8-9/icon-128x128.png" alt="Robotica 8-9">
+        <h3>Robotica 8-9</h3>
+        <p>Programacion visual y mecanica</p>
+      </div>
+      <div class="icon-card">
+        <img src="robotica_10/icon-128x128.png" alt="Robotica 10">
+        <h3>Robotica 10</h3>
+        <p>Micro:bit y electronica basica</p>
+      </div>
+      <div class="icon-card">
+        <img src="robotica_12/icon-128x128.png" alt="Robotica 12">
+        <h3>Robotica 12</h3>
+        <p>IoT, ARM y proyectos avanzados</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HACKING -->
+  <section id="hacking">
+    <div class="section-header">
+      <h2>Hacking</h2>
+      <span class="badge">4 cursos</span>
+    </div>
+    <div class="icon-grid">
+      <div class="icon-card">
+        <img src="hacking_1-raspberry/icon-128x128.png" alt="Hacking 1">
+        <h3>Hacking 1</h3>
+        <p>Raspberry Pi, hardware y Linux basico</p>
+      </div>
+      <div class="icon-card">
+        <img src="hacking_2-laptop/icon-128x128.png" alt="Hacking 2">
+        <h3>Hacking 2</h3>
+        <p>Ciberseguridad, analisis y pentesting</p>
+      </div>
+      <div class="icon-card">
+        <img src="hacking_3-servidores/icon-128x128.png" alt="Hacking 3">
+        <h3>Hacking 3</h3>
+        <p>Servidores, redes y defensa</p>
+      </div>
+      <div class="icon-card">
+        <img src="hacking_4-drones-iot/icon-128x128.png" alt="Drones - Apps - IoT">
+        <h3>Drones - Apps - IoT</h3>
+        <p>Drones, apps moviles y dispositivos IoT</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMPRENDIMIENTO -->
+  <section id="emprendimiento">
+    <div class="section-header">
+      <h2>Emprendimiento</h2>
+      <span class="badge">3 cursos</span>
+    </div>
+    <div class="icon-grid">
+      <div class="icon-card">
+        <img src="emprendimiento_miniempresas/icon-128x128.png" alt="Miniempresas">
+        <h3>Miniempresas</h3>
+        <p>Creacion de empresas con certificacion SECOT</p>
+      </div>
+      <div class="icon-card">
+        <img src="emprendimiento_innovacion/icon-128x128.png" alt="Innovacion Empresarial">
+        <h3>Innovacion Empresarial</h3>
+        <p>Creatividad y desarrollo de ideas</p>
+      </div>
+      <div class="icon-card">
+        <img src="emprendimiento_proyecto-final/icon-128x128.png" alt="Proyecto Final">
+        <h3>Proyecto Final</h3>
+        <p>Presentacion y defensa del proyecto</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEATRO -->
+  <section id="teatro">
+    <div class="section-header">
+      <h2>Teatro</h2>
+      <span class="badge">2 cursos</span>
+    </div>
+    <div class="icon-grid">
+      <div class="icon-card">
+        <img src="teatro_musical/icon-128x128.png" alt="Teatro Musical">
+        <h3>Teatro Musical</h3>
+        <p>Interpretacion, canto y movimiento</p>
+      </div>
+      <div class="icon-card">
+        <img src="teatro_I-III/icon-128x128.png" alt="Teatro I-III">
+        <h3>Teatro I-III</h3>
+        <p>Expresion dramatica por niveles</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- OTRAS DISCIPLINAS -->
+  <section id="otras">
+    <div class="section-header">
+      <h2>Otras disciplinas</h2>
+      <span class="badge">4 cursos</span>
+    </div>
+    <div class="icon-grid">
+      <div class="icon-card">
+        <img src="fotografia/icon-128x128.png" alt="Fotografia">
+        <h3>Fotografia</h3>
+        <p>Tecnica fotografica y composicion</p>
+      </div>
+      <div class="icon-card">
+        <img src="oratoria/icon-128x128.png" alt="Oratoria">
+        <h3>Oratoria</h3>
+        <p>Retorica y comunicacion eficaz</p>
+      </div>
+      <div class="icon-card">
+        <img src="magia/icon-128x128.png" alt="Magia">
+        <h3>Magia</h3>
+        <p>Ilusionismo y prestidigitacion</p>
+      </div>
+      <div class="icon-card">
+        <img src="confeccion/icon-128x128.png" alt="Confeccion">
+        <h3>Confeccion</h3>
+        <p>Patronaje y diseno de vestuario</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIZE DEMO -->
+  <section id="sizes" class="size-demo">
+    <h2>Tamanios disponibles por icono</h2>
+    <div class="sizes-row">
+      <div class="size-item">
+        <img src="danza_flamenco-espanola/favicon-16x16.png" width="16" height="16" alt="16">
+        <span>16x16</span>
+      </div>
+      <div class="size-item">
+        <img src="danza_flamenco-espanola/favicon-32x32.png" width="32" height="32" alt="32">
+        <span>32x32</span>
+      </div>
+      <div class="size-item">
+        <img src="danza_flamenco-espanola/icon-48x48.png" width="48" height="48" alt="48">
+        <span>48x48</span>
+      </div>
+      <div class="size-item">
+        <img src="danza_flamenco-espanola/icon-64x64.png" width="64" height="64" alt="64">
+        <span>64x64</span>
+      </div>
+      <div class="size-item">
+        <img src="danza_flamenco-espanola/icon-96x96.png" width="96" height="96" alt="96">
+        <span>96x96</span>
+      </div>
+      <div class="size-item">
+        <img src="danza_flamenco-espanola/icon-128x128.png" width="128" height="128" alt="128">
+        <span>128x128</span>
+      </div>
+      <div class="size-item">
+        <img src="danza_flamenco-espanola/icon-192x192.png" width="192" height="192" alt="192">
+        <span>192x192</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <p><strong>Factoria Estudio</strong> &mdash; Demo de iconos web</p>
+  <p>29 iconos &middot; 9 tamanios PNG + 3 SVG cada uno &middot; 377 archivos</p>
+</footer>
+
+<script>
+  // Smooth scroll + active nav
+  document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      document.querySelector(link.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Update active on scroll
+  const sections = document.querySelectorAll('section[id]');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 120) current = s.id;
+    });
+    document.querySelectorAll('nav a').forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factoría Estudio — Demos</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #030712; color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 40px 20px;
+        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        h1 { font-size: 32px; font-weight: 300; margin-bottom: 6px; }
+        h1 span { color: #fbbf24; font-weight: 600; }
+        .sub { font-size: 12px; color: #475569; margin-bottom: 48px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1000px; width: 100%; }
+        .card {
+            position: relative; border-radius: 16px; overflow: hidden;
+            background: #0f172a; border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s ease; cursor: pointer; text-decoration: none; color: inherit;
+        }
+        .card:hover { transform: translateY(-4px); border-color: rgba(251,191,36,0.3); box-shadow: 0 16px 40px rgba(0,0,0,0.4); }
+        .card-preview {
+            height: 180px; display: flex; align-items: center; justify-content: center;
+            font-size: 48px; position: relative; overflow: hidden;
+        }
+        .card-body { padding: 20px 24px 24px; }
+        .card-title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+        .card-desc { font-size: 13px; color: #94a3b8; line-height: 1.6; }
+        .card-tag {
+            display: inline-block; margin-top: 12px; font-size: 10px; padding: 3px 10px;
+            border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        .card:nth-child(1) .card-preview { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
+        .card:nth-child(2) .card-preview { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .card:nth-child(3) .card-preview { background: linear-gradient(135deg, #030712 0%, #0a1628 100%); }
+
+        .card:nth-child(1) .card-tag { background: rgba(34,197,94,0.15); color: #4ade80; }
+        .card:nth-child(2) .card-tag { background: rgba(251,191,36,0.15); color: #fbbf24; }
+        .card:nth-child(3) .card-tag { background: rgba(168,85,247,0.15); color: #c084fc; }
+
+        .preview-icons { display: flex; gap: 8px; }
+        .preview-dot { width: 24px; height: 24px; border-radius: 50%; }
+
+        /* Mini network preview */
+        .mini-net { position: relative; width: 120px; height: 100px; }
+        .mini-node { position: absolute; border-radius: 50%; }
+        .mini-line { position: absolute; height: 1px; transform-origin: left center; }
+
+        footer { margin-top: 48px; font-size: 11px; color: #334155; }
+        footer a { color: #475569; text-decoration: none; }
+        footer a:hover { color: #94a3b8; }
+
+        canvas.preview-canvas { border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+<h1><span>Factoría</span> Estudio</h1>
+<p class="sub mono">3 demos interactivas · artes, tecnología y emprendimiento</p>
+
+<div class="grid">
+
+    <a href="demo.html" class="card">
+        <div class="card-preview">
+            <svg width="120" height="100" viewBox="0 0 120 100" fill="none">
+                <rect x="10" y="10" width="30" height="30" rx="6" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5"/>
+                <rect x="50" y="15" width="25" height="25" rx="6" fill="#fde68a" stroke="#ca8a04" stroke-width="1.5"/>
+                <rect x="85" y="10" width="28" height="30" rx="6" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/>
+                <rect x="20" y="55" width="35" height="30" rx="6" fill="#fecaca" stroke="#dc2626" stroke-width="1.5"/>
+                <rect x="65" y="58" width="30" height="28" rx="6" fill="#ddd6fe" stroke="#7c3aed" stroke-width="1.5"/>
+                <text x="60" y="98" text-anchor="middle" font-size="8" fill="#94a3b8" font-family="Inter">icon grid</text>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-title">Light — Icon Grid</div>
+            <div class="card-desc">Catálogo clásico con iconos PNG de madera. Diseño limpio y claro sobre fondo blanco.</div>
+            <span class="card-tag mono">29 iconos</span>
+        </div>
+    </a>
+
+    <a href="demo-eigenlab.html" class="card">
+        <div class="card-preview">
+            <svg width="120" height="100" viewBox="0 0 120 100" fill="none">
+                <rect x="8" y="8" width="32" height="26" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+                <rect x="46" y="12" width="28" height="24" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+                <rect x="80" y="8" width="32" height="26" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+                <rect x="15" y="45" width="35" height="26" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+                <rect x="58" y="48" width="30" height="24" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+                <!-- mini canvas animations -->
+                <line x1="12" y1="28" x2="36" y2="16" stroke="#fbbf24" stroke-width="0.8" opacity="0.5"/>
+                <line x1="50" y1="30" x2="70" y2="18" stroke="#22c55e" stroke-width="0.8" opacity="0.5"/>
+                <circle cx="92" cy="20" r="4" fill="none" stroke="#a855f7" stroke-width="0.8" opacity="0.5"/>
+                <text x="60" y="98" text-anchor="middle" font-size="8" fill="#475569" font-family="Inter">canvas sims</text>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-title">Dark — Canvas Simulations</div>
+            <div class="card-desc">Estilo EigenLab con 22 mini-simulaciones canvas únicas. Tema oscuro con Tailwind.</div>
+            <span class="card-tag mono">22 sims</span>
+        </div>
+    </a>
+
+    <a href="demo-network.html" class="card">
+        <div class="card-preview">
+            <svg width="140" height="100" viewBox="0 0 140 100" fill="none">
+                <!-- connections -->
+                <line x1="70" y1="35" x2="30" y2="20" stroke="#334155" stroke-width="0.8"/>
+                <line x1="70" y1="35" x2="110" y2="25" stroke="#334155" stroke-width="0.8"/>
+                <line x1="70" y1="35" x2="45" y2="65" stroke="#334155" stroke-width="0.8"/>
+                <line x1="70" y1="35" x2="100" y2="60" stroke="#334155" stroke-width="0.8"/>
+                <line x1="70" y1="35" x2="70" y2="75" stroke="#334155" stroke-width="0.8"/>
+                <!-- course nodes -->
+                <circle cx="30" cy="20" r="5" fill="#22c55e" opacity="0.7"/>
+                <circle cx="110" cy="25" r="5" fill="#ef4444" opacity="0.7"/>
+                <circle cx="45" cy="65" r="5" fill="#a855f7" opacity="0.7"/>
+                <circle cx="100" cy="60" r="5" fill="#ec4899" opacity="0.7"/>
+                <circle cx="70" cy="75" r="5" fill="#f97316" opacity="0.7"/>
+                <!-- hub -->
+                <circle cx="70" cy="35" r="10" fill="#fbbf24" opacity="0.9"/>
+                <!-- small orbiters -->
+                <circle cx="18" cy="28" r="2.5" fill="#22c55e" opacity="0.4"/>
+                <circle cx="38" cy="12" r="2.5" fill="#22c55e" opacity="0.4"/>
+                <circle cx="120" cy="18" r="2.5" fill="#ef4444" opacity="0.4"/>
+                <circle cx="105" cy="35" r="2.5" fill="#ef4444" opacity="0.4"/>
+                <text x="70" y="96" text-anchor="middle" font-size="8" fill="#475569" font-family="Inter">network graph</text>
+            </svg>
+        </div>
+        <div class="card-body">
+            <div class="card-title">Universe — Network Graph</div>
+            <div class="card-desc">Grafo interactivo con física de esferas, fondo universo, patrones internos por categoría. Zoom, pan, tour.</div>
+            <span class="card-tag mono">46 nodos</span>
+        </div>
+    </a>
+
+</div>
+
+<footer class="mono">
+    <a href="https://factoriaestudio.es" target="_blank">factoriaestudio.es</a> · Aravaca, Madrid
+</footer>
+
+</body>
+</html>

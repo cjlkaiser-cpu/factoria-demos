@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factoria Estudio - Catalogo de Cursos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .card { transition: all 0.3s ease; cursor: pointer; }
+        .card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(196,168,130,0.12); }
+        .card:hover .card-border { opacity: 1; }
+        .card-border {
+            position: absolute; inset: 0; border-radius: 1rem; padding: 2px;
+            background: linear-gradient(135deg, var(--accent, #C4A882), var(--accent2, #8B6E4E));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .glow-text { text-shadow: 0 0 20px rgba(196,168,130,0.5); }
+        .preview-canvas { border-radius: 0.5rem; }
+        .tag { font-size: 0.65rem; padding: 2px 8px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.5px; }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+
+<header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-4">
+        <div class="flex justify-between items-center">
+            <div>
+                <nav class="text-xs text-gray-600 mb-1 mono">
+                    <span>factoriaestudio.es</span> <span class="mx-1">/</span> <span class="text-gray-500">catalogo 2025-2026</span>
+                </nav>
+                <h1 class="text-2xl font-light">
+                    <span class="text-amber-400 font-medium glow-text">Factoria</span> Estudio
+                </h1>
+                <p class="text-gray-600 text-sm mono">Artes, tecnologia y emprendimiento</p>
+            </div>
+            <div class="hidden sm:flex items-center gap-4 text-gray-700 mono text-xs">
+                <span>29 cursos</span><span class="text-gray-800">|</span><span>8 areas</span><span class="text-gray-800">|</span><span>Aravaca</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<nav class="border-b border-gray-900 bg-gray-950/80 backdrop-blur-sm sticky top-[73px] z-40">
+    <div class="max-w-6xl mx-auto px-6 py-2 flex gap-2 overflow-x-auto" id="nav">
+        <a href="#robotica" class="nav-link px-3 py-1.5 rounded-full text-xs font-medium text-gray-500 hover:text-amber-400 hover:bg-amber-400/10 transition whitespace-nowrap">Robotica</a>
+        <a href="#hacking" class="nav-link px-3 py-1.5 rounded-full text-xs font-medium text-gray-500 hover:text-green-400 hover:bg-green-400/10 transition whitespace-nowrap">Hacking</a>
+        <a href="#cine" class="nav-link px-3 py-1.5 rounded-full text-xs font-medium text-gray-500 hover:text-cyan-400 hover:bg-cyan-400/10 transition whitespace-nowrap">Cine</a>
+        <a href="#danza" class="nav-link px-3 py-1.5 rounded-full text-xs font-medium text-gray-500 hover:text-pink-400 hover:bg-pink-400/10 transition whitespace-nowrap">Danza</a>
+        <a href="#plastica" class="nav-link px-3 py-1.5 rounded-full text-xs font-medium text-gray-500 hover:text-purple-400 hover:bg-purple-400/10 transition whitespace-nowrap">Plastica</a>
+        <a href="#emprendimiento" class="nav-link px-3 py-1.5 rounded-full text-xs font-medium text-gray-500 hover:text-emerald-400 hover:bg-emerald-400/10 transition whitespace-nowrap">Emprendimiento</a>
+        <a href="#teatro" class="nav-link px-3 py-1.5 rounded-full text-xs font-medium text-gray-500 hover:text-red-400 hover:bg-red-400/10 transition whitespace-nowrap">Teatro</a>
+        <a href="#otras" class="nav-link px-3 py-1.5 rounded-full text-xs font-medium text-gray-500 hover:text-yellow-400 hover:bg-yellow-400/10 transition whitespace-nowrap">Otras</a>
+    </div>
+</nav>
+
+<main class="max-w-6xl mx-auto px-6 py-12">
+
+<!-- Hero -->
+<section class="text-center mb-16">
+    <h2 class="text-4xl font-light mb-4">Cursos <span class="text-amber-400 font-medium glow-text">2025-2026</span></h2>
+    <p class="text-gray-500 max-w-xl mx-auto">La escuela de artes, tecnologia y emprendimiento del Colegio Estudio. Aravaca, Madrid.</p>
+</section>
+
+<!-- ROBOTICA -->
+<section id="robotica" class="mb-16">
+    <div class="flex items-center gap-3 mb-1"><h2 class="text-2xl font-light"><span class="text-amber-400 font-medium">Robotica</span></h2><span class="tag bg-amber-500/20 text-amber-400 mono">4 niveles</span></div>
+    <p class="text-gray-600 text-sm mb-6">Construccion, programacion y electronica por edades</p>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5" id="grid-robotica"></div>
+</section>
+
+<!-- HACKING -->
+<section id="hacking" class="mb-16">
+    <div class="flex items-center gap-3 mb-1"><h2 class="text-2xl font-light"><span class="text-green-400 font-medium">Hacking</span> y Ciberseguridad</h2><span class="tag bg-green-500/20 text-green-400 mono">4 cursos</span></div>
+    <p class="text-gray-600 text-sm mb-6">Hardware, pentesting, redes y dispositivos IoT</p>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5" id="grid-hacking"></div>
+</section>
+
+<!-- CINE -->
+<section id="cine" class="mb-16">
+    <div class="flex items-center gap-3 mb-1"><h2 class="text-2xl font-light"><span class="text-cyan-400 font-medium">Cine</span></h2><span class="tag bg-cyan-500/20 text-cyan-400 mono">4 cursos</span></div>
+    <p class="text-gray-600 text-sm mb-6">Produccion cinematografica de principio a fin</p>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5" id="grid-cine"></div>
+</section>
+
+<!-- DANZA -->
+<section id="danza" class="mb-16">
+    <div class="flex items-center gap-3 mb-1"><h2 class="text-2xl font-light"><span class="text-pink-400 font-medium">Danza</span></h2><span class="tag bg-pink-500/20 text-pink-400 mono">4 estilos</span></div>
+    <p class="text-gray-600 text-sm mb-6">Del ballet clasico al flamenco</p>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5" id="grid-danza"></div>
+</section>
+
+<!-- PLASTICA -->
+<section id="plastica" class="mb-16">
+    <div class="flex items-center gap-3 mb-1"><h2 class="text-2xl font-light"><span class="text-purple-400 font-medium">Plastica</span></h2><span class="tag bg-purple-500/20 text-purple-400 mono">4 cursos</span></div>
+    <p class="text-gray-600 text-sm mb-6">Artes visuales, escultura y creacion</p>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5" id="grid-plastica"></div>
+</section>
+
+<!-- EMPRENDIMIENTO -->
+<section id="emprendimiento" class="mb-16">
+    <div class="flex items-center gap-3 mb-1"><h2 class="text-2xl font-light"><span class="text-emerald-400 font-medium">Emprendimiento</span></h2><span class="tag bg-emerald-500/20 text-emerald-400 mono">3 cursos</span></div>
+    <p class="text-gray-600 text-sm mb-6">Creacion de empresas con certificacion SECOT</p>
+    <div class="grid md:grid-cols-3 gap-5" id="grid-emprendimiento"></div>
+</section>
+
+<!-- TEATRO -->
+<section id="teatro" class="mb-16">
+    <div class="flex items-center gap-3 mb-1"><h2 class="text-2xl font-light"><span class="text-red-400 font-medium">Teatro</span></h2><span class="tag bg-red-500/20 text-red-400 mono">2 cursos</span></div>
+    <p class="text-gray-600 text-sm mb-6">Interpretacion y expresion dramatica</p>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5" id="grid-teatro"></div>
+</section>
+
+<!-- OTRAS -->
+<section id="otras" class="mb-16">
+    <div class="flex items-center gap-3 mb-1"><h2 class="text-2xl font-light"><span class="text-yellow-400 font-medium">Otras</span> disciplinas</h2><span class="tag bg-yellow-500/20 text-yellow-400 mono">4 cursos</span></div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5" id="grid-otras"></div>
+</section>
+
+<section class="text-center"><div class="flex flex-wrap justify-center gap-3">
+    <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-500 mono">Valdemarín</span>
+    <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-500 mono">Conde Orgaz</span>
+    <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-500 mono">40+ profesores</span>
+    <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-500 mono">6 - adultos</span>
+</div></section>
+</main>
+
+<footer class="border-t border-gray-900 py-6 mt-8">
+    <div class="max-w-6xl mx-auto px-6 text-center text-gray-700 text-sm mono">Factoria Estudio &middot; Colegio Estudio, Aravaca</div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+const COURSES = {
+    robotica: [
+        { title:'Robotica 6-7', tag:'6-7 años', desc:'Introduccion ludica a la robotica', sim:'gears', accent:'amber' },
+        { title:'Robotica 8-9', tag:'8-9 años', desc:'Programacion visual y construccion', sim:'cube3d', accent:'amber' },
+        { title:'Robotica 10', tag:'10 años', desc:'Micro:bit y electronica basica', sim:'ledgrid', accent:'amber' },
+        { title:'Robotica 12', tag:'12+ años', desc:'IoT, ARM y proyectos avanzados', sim:'circuit', accent:'amber' },
+    ],
+    hacking: [
+        { title:'Hacking 1', tag:'Nivel 1', desc:'Raspberry Pi, hardware y Linux', sim:'terminal', accent:'green' },
+        { title:'Hacking 2', tag:'Nivel 2', desc:'Ciberseguridad y pentesting', sim:'cipher', accent:'green' },
+        { title:'Hacking 3', tag:'Nivel 3', desc:'Servidores, redes y defensa', sim:'network', accent:'green' },
+        { title:'Drones - Apps - IoT', tag:'IoT', desc:'Drones, apps y dispositivos conectados', sim:'drones', accent:'green' },
+    ],
+    cine: [
+        { title:'Rodaje y Claqueta', tag:'Produccion', desc:'Tecnicas de grabacion y direccion', sim:'filmstrip', accent:'cyan' },
+        { title:'Guion y Storyboard', tag:'Guion', desc:'Escritura creativa y planificacion visual', sim:'typewriter', accent:'cyan' },
+        { title:'Edicion y Montaje', tag:'Post', desc:'Postproduccion y edicion digital', sim:'timeline', accent:'cyan' },
+        { title:'Sonido y Efectos', tag:'Audio', desc:'Diseno sonoro y efectos especiales', sim:'waveform', accent:'cyan' },
+    ],
+    danza: [
+        { title:'Clasica', tag:'Ballet', desc:'Ballet clasico y tecnica de puntas', sim:'ribbons', accent:'pink' },
+        { title:'Moderno', tag:'Contemporaneo', desc:'Danza contemporanea y expresion', sim:'burst', accent:'pink' },
+        { title:'Flamenco y Espanola', tag:'Flamenco', desc:'Flamenco, castanuelas y abanico', sim:'fire', accent:'pink' },
+        { title:'Ballet Adultos', tag:'Adultos', desc:'Clases de ballet para todas las edades', sim:'curves', accent:'pink' },
+    ],
+    plastica: [
+        { title:'Dibujo y Boceto', tag:'Dibujo', desc:'Tecnicas de dibujo y composicion', sim:'pencil', accent:'purple' },
+        { title:'Pintura y Color', tag:'Pintura', desc:'Oleo, acuarela y teoria del color', sim:'paint', accent:'purple' },
+        { title:'Escultura y Modelado', tag:'3D', desc:'Modelado en arcilla y talla', sim:'wireframe', accent:'purple' },
+        { title:'Atrezo y Decoracion', tag:'Escena', desc:'Creacion de objetos escenicos', sim:'mosaic', accent:'purple' },
+    ],
+    emprendimiento: [
+        { title:'Miniempresas', tag:'SECOT', desc:'Creacion de empresas con certificacion', sim:'chart', accent:'emerald' },
+        { title:'Innovacion', tag:'Ideas', desc:'Creatividad y desarrollo de ideas', sim:'lightbulb', accent:'emerald' },
+        { title:'Proyecto Final', tag:'Defensa', desc:'Presentacion y defensa del proyecto', sim:'progress', accent:'emerald' },
+    ],
+    teatro: [
+        { title:'Teatro Musical', tag:'Musical', desc:'Interpretacion, canto y movimiento', sim:'notes', accent:'red' },
+        { title:'Teatro I-III', tag:'Niveles', desc:'Expresion dramatica por niveles', sim:'spotlight', accent:'red' },
+    ],
+    otras: [
+        { title:'Fotografia', tag:'Foto', desc:'Tecnica fotografica y composicion', sim:'shutter', accent:'yellow' },
+        { title:'Oratoria', tag:'Voz', desc:'Retorica y comunicacion eficaz', sim:'soundbars', accent:'yellow' },
+        { title:'Magia', tag:'Ilusion', desc:'Ilusionismo y prestidigitacion', sim:'sparkles', accent:'yellow' },
+        { title:'Confeccion', tag:'Moda', desc:'Patronaje y diseno de vestuario', sim:'weave', accent:'yellow' },
+    ],
+};
+
+const C = {
+    amber:[245,158,11], green:[34,197,94], cyan:[6,182,212], pink:[236,72,153],
+    purple:[168,85,247], emerald:[16,185,129], red:[248,113,113], yellow:[250,204,21]
+};
+
+// ═══════════════════════════════════════
+// BUILD CARDS
+// ═══════════════════════════════════════
+const allSims = [];
+
+Object.entries(COURSES).forEach(([section, courses]) => {
+    const grid = document.getElementById('grid-' + section);
+    courses.forEach((course, i) => {
+        const id = `sim-${section}-${i}`;
+        const c = C[course.accent];
+        const a1 = `rgb(${c.join(',')})`;
+        grid.innerHTML += `
+        <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden" style="--accent:${a1};--accent2:rgba(${c.join(',')},0.4)">
+            <div class="card-border"></div>
+            <div class="p-4">
+                <canvas id="${id}" class="preview-canvas w-full h-44 bg-black mb-3"></canvas>
+                <span class="tag bg-${course.accent}-500/20 text-${course.accent}-400">${course.tag}</span>
+                <h3 class="text-base font-medium mt-2 mb-1">${course.title}</h3>
+                <p class="text-gray-500 text-xs mb-3">${course.desc}</p>
+                <span class="block w-full text-center py-2 bg-${course.accent}-500/10 text-${course.accent}-400 rounded-lg text-sm font-medium mono">
+                    Explorar →
+                </span>
+            </div>
+        </div>`;
+        allSims.push({ id, sim: course.sim, c });
+    });
+});
+
+// ═══════════════════════════════════════
+// SIMULATIONS
+// ═══════════════════════════════════════
+const states = {};
+let t = 0;
+
+function rng(x, y) { return ((Math.sin(x*12.9898+y*78.233)*43758.5453)%1+1)%1; }
+
+function init() {
+    allSims.forEach(({id, sim, c}) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const w = el.width = el.offsetWidth * 2;
+        const h = el.height = el.offsetHeight * 2;
+        const ctx = el.getContext('2d');
+        const s = { ctx, w, h, sim, c, a:`${c[0]},${c[1]},${c[2]}` };
+
+        // Per-sim state
+        if (sim==='gears') s.gears=[{x:.3,y:.45,r:50,teeth:10,spd:1},{x:.65,y:.55,r:35,teeth:7,spd:-1.43},{x:.82,y:.3,r:25,teeth:6,spd:2}];
+        if (sim==='cube3d') s.rot={x:0,y:0};
+        if (sim==='ledgrid') { s.grid=[]; for(let i=0;i<5;i++){s.grid[i]=[];for(let j=0;j<5;j++)s.grid[i][j]=0;} s.pattern=0;s.tick=0; }
+        if (sim==='circuit') s.pulses=Array.from({length:10},()=>({x:Math.random(),y:Math.random(),dir:Math.floor(Math.random()*4),life:Math.random()}));
+        if (sim==='terminal') { s.lines=[]; s.cursor=0; s.cmds=['$ ssh pi@192.168.1.42','$ nmap -sV 10.0.0.0/24','$ sudo tcpdump -i eth0','$ python3 exploit.py','$ cat /etc/shadow','> ACCESS GRANTED']; }
+        if (sim==='cipher') { s.chars=[]; for(let i=0;i<80;i++) s.chars.push({x:Math.random(),y:Math.random(),c:String.fromCharCode(48+Math.random()*74),spd:.3+Math.random()*1.5}); }
+        if (sim==='network') s.nodes=Array.from({length:14},()=>({x:.1+Math.random()*.8,y:.1+Math.random()*.8,vx:(Math.random()-.5)*.001,vy:(Math.random()-.5)*.001}));
+        if (sim==='drones') s.drones=Array.from({length:4},()=>({x:Math.random(),y:Math.random(),tx:Math.random(),ty:Math.random(),trail:[]}));
+        if (sim==='filmstrip') s.offset=0;
+        if (sim==='typewriter') { s.text='INT. FACTORIA - DIA\n\nLa camara recorre el\ntaller de cine donde\nlos alumnos preparan\nel rodaje del corto.'; s.pos=0; s.tick=0; }
+        if (sim==='timeline') s.bars=Array.from({length:5},(_,i)=>({y:.15+i*.17,segs:Array.from({length:3+Math.floor(Math.random()*4)},()=>({x:Math.random()*.7,w:.05+Math.random()*.2}))}));
+        if (sim==='waveform') s.phase=Math.random()*6;
+        if (sim==='ribbons') s.pts=Array.from({length:3},()=>({x:Math.random(),y:Math.random(),trail:[]}));
+        if (sim==='burst') s.particles=[];
+        if (sim==='fire') s.flames=Array.from({length:60},()=>({x:.3+Math.random()*.4,y:1,vy:-.005-.01*Math.random(),life:Math.random(),size:2+Math.random()*4}));
+        if (sim==='curves') s.phase=0;
+        if (sim==='pencil') s.lines=[];
+        if (sim==='paint') s.drops=[];
+        if (sim==='wireframe') s.rot={x:0,y:0};
+        if (sim==='mosaic') { s.tiles=[]; for(let i=0;i<6;i++)for(let j=0;j<4;j++)s.tiles.push({x:i,y:j,h:Math.random()*360,pulse:Math.random()*6}); }
+        if (sim==='chart') s.vals=Array.from({length:12},(_,i)=>Math.sin(i*.5)*.3+.4+Math.random()*.2);
+        if (sim==='lightbulb') s.rays=Array.from({length:12},(_,i)=>({angle:i/12*Math.PI*2,len:.1+Math.random()*.1}));
+        if (sim==='progress') s.bars=[{p:0,target:.85},{p:0,target:.6},{p:0,target:.95},{p:0,target:.72}];
+        if (sim==='notes') s.notes=Array.from({length:8},()=>({x:Math.random(),y:Math.random(),vy:-.003-.003*Math.random(),type:Math.floor(Math.random()*3)}));
+        if (sim==='spotlight') s.angle=0;
+        if (sim==='shutter') s.aperture=0;
+        if (sim==='soundbars') s.bars=Array.from({length:24},()=>Math.random());
+        if (sim==='sparkles') s.stars=Array.from({length:25},()=>({x:Math.random(),y:Math.random(),s:Math.random()*6,spd:.5+Math.random()*2}));
+        if (sim==='weave') s.offset=0;
+
+        states[id] = s;
+    });
+}
+
+function drawGear(ctx, cx, cy, r, teeth, rotation, a) {
+    const inner = r * 0.7, toothH = r * 0.25;
+    ctx.beginPath();
+    for (let i = 0; i < teeth * 2; i++) {
+        const ang = rotation + (i / (teeth * 2)) * Math.PI * 2;
+        const rad = i % 2 === 0 ? r + toothH : r;
+        ctx.lineTo(cx + Math.cos(ang) * rad, cy + Math.sin(ang) * rad);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = `rgba(${a},0.6)`;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx, cy, inner * 0.4, 0, Math.PI * 2);
+    ctx.stroke();
+}
+
+function animate() {
+    t += 0.016;
+
+    Object.values(states).forEach(s => {
+        const {ctx,w,h,sim,a} = s;
+
+        // ── ROBOTICA ──
+        if (sim==='gears') {
+            ctx.fillStyle='rgba(0,0,0,0.12)'; ctx.fillRect(0,0,w,h);
+            s.gears.forEach(g => drawGear(ctx, g.x*w, g.y*h, g.r, g.teeth, t*g.spd, a));
+        }
+        if (sim==='cube3d') {
+            ctx.fillStyle='rgba(0,0,0,0.15)'; ctx.fillRect(0,0,w,h);
+            s.rot.x+=.008; s.rot.y+=.012;
+            const pts=[[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]];
+            const cx=w/2, cy=h/2, sc=40;
+            const proj = pts.map(([x,y,z])=>{
+                let x1=x*Math.cos(s.rot.y)-z*Math.sin(s.rot.y), z1=x*Math.sin(s.rot.y)+z*Math.cos(s.rot.y);
+                let y1=y*Math.cos(s.rot.x)-z1*Math.sin(s.rot.x); z1=y*Math.sin(s.rot.x)+z1*Math.cos(s.rot.x);
+                return [cx+x1*sc, cy+y1*sc];
+            });
+            ctx.strokeStyle=`rgba(${a},0.5)`; ctx.lineWidth=1.5;
+            [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]].forEach(([i,j])=>{
+                ctx.beginPath(); ctx.moveTo(proj[i][0],proj[i][1]); ctx.lineTo(proj[j][0],proj[j][1]); ctx.stroke();
+            });
+        }
+        if (sim==='ledgrid') {
+            ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h);
+            s.tick+=.03;
+            if(s.tick>1){s.tick=0;s.pattern=(s.pattern+1)%4;}
+            const sz=Math.min(w,h)*.12, gap=sz*1.3, ox=(w-gap*4)/2, oy=(h-gap*4)/2;
+            for(let i=0;i<5;i++)for(let j=0;j<5;j++){
+                let on=false;
+                const p=s.pattern;
+                if(p===0) on=(i+j)%2===0;
+                if(p===1) on=i===2||j===2;
+                if(p===2) on=Math.abs(i-2)+Math.abs(j-2)<=2;
+                if(p===3) on=i===j||i===4-j;
+                ctx.fillStyle=on?`rgba(${a},0.8)`:`rgba(${a},0.06)`;
+                ctx.beginPath(); ctx.roundRect(ox+j*gap, oy+i*gap, sz, sz, 4); ctx.fill();
+            }
+        }
+        if (sim==='circuit') {
+            ctx.fillStyle='rgba(0,0,0,0.06)'; ctx.fillRect(0,0,w,h);
+            const step=16;
+            ctx.strokeStyle=`rgba(${a},0.04)`; ctx.lineWidth=.5;
+            for(let x=0;x<w;x+=step){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+            for(let y=0;y<h;y+=step){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+            const dirs=[[1,0],[0,1],[-1,0],[0,-1]];
+            s.pulses.forEach(p=>{
+                p.life+=.008; p.x+=dirs[p.dir][0]*.004; p.y+=dirs[p.dir][1]*.004;
+                if(Math.random()<.03) p.dir=Math.floor(Math.random()*4);
+                if(p.x<0||p.x>1||p.y<0||p.y>1||p.life>1){p.x=Math.random();p.y=Math.random();p.life=0;p.dir=Math.floor(Math.random()*4);}
+                ctx.beginPath(); ctx.arc(p.x*w,p.y*h,3,0,Math.PI*2);
+                ctx.fillStyle=`rgba(${a},${.9-p.life*.7})`; ctx.fill();
+                ctx.beginPath(); ctx.arc(p.x*w,p.y*h,8,0,Math.PI*2);
+                ctx.fillStyle=`rgba(${a},${.15-p.life*.1})`; ctx.fill();
+            });
+        }
+
+        // ── HACKING ──
+        if (sim==='terminal') {
+            ctx.fillStyle='rgba(0,0,0,0.04)'; ctx.fillRect(0,0,w,h);
+            s.tick = (s.tick||0) + .016;
+            if(s.tick>.8 && s.lines.length<s.cmds.length){ s.lines.push(s.cmds[s.lines.length]); s.tick=0; }
+            if(s.lines.length>=s.cmds.length && s.tick>2){ s.lines=[]; s.tick=0; ctx.fillStyle='#000';ctx.fillRect(0,0,w,h); }
+            ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h);
+            ctx.font='11px JetBrains Mono'; ctx.fillStyle=`rgba(${a},0.85)`;
+            s.lines.forEach((l,i)=>ctx.fillText(l, 12, 20+i*18));
+            if(Math.floor(t*3)%2) ctx.fillRect(12+s.lines.length?ctx.measureText(s.lines[s.lines.length-1]||'').width+14:12, 10+(s.lines.length)*18, 7, 12);
+        }
+        if (sim==='cipher') {
+            ctx.fillStyle='rgba(0,0,0,0.08)'; ctx.fillRect(0,0,w,h);
+            ctx.font='10px JetBrains Mono';
+            s.chars.forEach(ch=>{
+                ch.y-=.003*ch.spd; if(ch.y<0){ch.y=1;ch.x=Math.random();ch.c=String.fromCharCode(48+Math.random()*74);}
+                if(Math.random()<.02) ch.c=String.fromCharCode(48+Math.random()*74);
+                ctx.fillStyle=`rgba(${a},${.15+ch.y*.4})`; ctx.fillText(ch.c, ch.x*w, ch.y*h);
+            });
+        }
+        if (sim==='network') {
+            ctx.fillStyle='rgba(0,0,0,0.1)'; ctx.fillRect(0,0,w,h);
+            s.nodes.forEach(n=>{ n.x+=n.vx;n.y+=n.vy; if(n.x<.05||n.x>.95)n.vx*=-1; if(n.y<.05||n.y>.95)n.vy*=-1; });
+            ctx.lineWidth=.5;
+            for(let i=0;i<s.nodes.length;i++)for(let j=i+1;j<s.nodes.length;j++){
+                const dx=s.nodes[i].x-s.nodes[j].x, dy=s.nodes[i].y-s.nodes[j].y, d=dx*dx+dy*dy;
+                if(d<.06){ctx.strokeStyle=`rgba(${a},${.2-d*3})`; ctx.beginPath();ctx.moveTo(s.nodes[i].x*w,s.nodes[i].y*h);ctx.lineTo(s.nodes[j].x*w,s.nodes[j].y*h);ctx.stroke();}
+            }
+            s.nodes.forEach(n=>{ctx.beginPath();ctx.arc(n.x*w,n.y*h,3,0,Math.PI*2);ctx.fillStyle=`rgba(${a},0.7)`;ctx.fill();});
+        }
+        if (sim==='drones') {
+            ctx.fillStyle='rgba(0,0,0,0.06)'; ctx.fillRect(0,0,w,h);
+            s.drones.forEach(d=>{
+                d.x+=(d.tx-d.x)*.01; d.y+=(d.ty-d.y)*.01;
+                if(Math.abs(d.x-d.tx)<.02&&Math.abs(d.y-d.ty)<.02){d.tx=.1+Math.random()*.8;d.ty=.1+Math.random()*.8;}
+                d.trail.push({x:d.x,y:d.y});if(d.trail.length>40)d.trail.shift();
+                ctx.strokeStyle=`rgba(${a},0.15)`; ctx.lineWidth=1; ctx.beginPath();
+                d.trail.forEach((p,i)=>{i===0?ctx.moveTo(p.x*w,p.y*h):ctx.lineTo(p.x*w,p.y*h);});ctx.stroke();
+                // drone body
+                ctx.fillStyle=`rgba(${a},0.8)`;ctx.fillRect(d.x*w-4,d.y*h-2,8,4);
+                // props
+                const propAngle=t*20;
+                [[-6,-4],[6,-4],[-6,4],[6,4]].forEach(([ox,oy])=>{
+                    ctx.beginPath();ctx.arc(d.x*w+ox,d.y*h+oy,4,propAngle,propAngle+Math.PI);ctx.strokeStyle=`rgba(${a},0.5)`;ctx.lineWidth=1;ctx.stroke();
+                });
+            });
+        }
+
+        // ── CINE ──
+        if (sim==='filmstrip') {
+            ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h);
+            s.offset=(s.offset+.5)%50;
+            ctx.strokeStyle=`rgba(${a},0.3)`; ctx.lineWidth=1;
+            // perforations
+            for(let y=-50+s.offset;y<h;y+=50){
+                ctx.strokeRect(8,y+8,14,30); ctx.strokeRect(w-22,y+8,14,30);
+            }
+            // frame lines
+            ctx.strokeStyle=`rgba(${a},0.1)`;
+            ctx.beginPath();ctx.moveTo(28,0);ctx.lineTo(28,h);ctx.stroke();
+            ctx.beginPath();ctx.moveTo(w-28,0);ctx.lineTo(w-28,h);ctx.stroke();
+            // frames
+            for(let y=-50+s.offset;y<h;y+=100){
+                ctx.strokeStyle=`rgba(${a},0.15)`;ctx.strokeRect(36,y+10,w-72,78);
+                // scene number
+                ctx.fillStyle=`rgba(${a},0.2)`;ctx.font='9px JetBrains Mono';ctx.fillText('SC '+(Math.floor((y+200)/100)%24),42,y+24);
+            }
+        }
+        if (sim==='typewriter') {
+            ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h);
+            s.tick=(s.tick||0)+.016;
+            if(s.tick>.06&&s.pos<s.text.length){s.pos++;s.tick=0;}
+            if(s.pos>=s.text.length&&s.tick>3){s.pos=0;s.tick=0;}
+            ctx.font='11px JetBrains Mono';ctx.fillStyle=`rgba(${a},0.7)`;
+            const shown=s.text.substring(0,s.pos);
+            shown.split('\n').forEach((line,i)=>ctx.fillText(line,16,24+i*16));
+            if(Math.floor(t*3)%2){
+                const lastLine=shown.split('\n').pop();
+                const li=shown.split('\n').length-1;
+                ctx.fillRect(16+ctx.measureText(lastLine).width+2,14+li*16,7,12);
+            }
+        }
+        if (sim==='timeline') {
+            ctx.fillStyle='rgba(0,0,0,0.15)'; ctx.fillRect(0,0,w,h);
+            // playhead
+            const px=(t*.05)%1;
+            ctx.strokeStyle=`rgba(${a},0.5)`;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(px*w,0);ctx.lineTo(px*w,h);ctx.stroke();
+            // tracks
+            s.bars.forEach(track=>{
+                ctx.fillStyle=`rgba(${a},0.06)`;ctx.fillRect(0,track.y*h-1,w,h*.12);
+                track.segs.forEach(seg=>{
+                    ctx.fillStyle=`rgba(${a},0.25)`;ctx.beginPath();ctx.roundRect(seg.x*w,track.y*h,seg.w*w,h*.1,3);ctx.fill();
+                });
+            });
+            // timecode
+            ctx.fillStyle=`rgba(${a},0.3)`;ctx.font='9px JetBrains Mono';
+            const tc=Math.floor(px*600);ctx.fillText(`${String(Math.floor(tc/60)).padStart(2,'0')}:${String(tc%60).padStart(2,'0')}:${String(Math.floor(t*24)%24).padStart(2,'0')}`,8,h-8);
+        }
+        if (sim==='waveform') {
+            ctx.fillStyle='rgba(0,0,0,0.12)'; ctx.fillRect(0,0,w,h);
+            for(let l=0;l<3;l++){
+                ctx.beginPath();ctx.strokeStyle=`rgba(${a},${.4-.1*l})`;ctx.lineWidth=1.5-l*.4;
+                for(let x=0;x<w;x+=2){
+                    const y=h/2+Math.sin(x*.015+t*(2+l)+s.phase+l)*20*(1+l*.3)+Math.sin(x*.04+t*3)*8;
+                    x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+                }ctx.stroke();
+            }
+        }
+
+        // ── DANZA ──
+        if (sim==='ribbons') {
+            ctx.fillStyle='rgba(0,0,0,0.03)'; ctx.fillRect(0,0,w,h);
+            s.pts.forEach((p,idx)=>{
+                p.x+=Math.cos(t*(.8+idx*.3))*0.003; p.y+=Math.sin(t*(.6+idx*.2))*0.003;
+                if(p.x<0||p.x>1)p.x=.5;if(p.y<0||p.y>1)p.y=.5;
+                p.trail.push({x:p.x,y:p.y});if(p.trail.length>100)p.trail.shift();
+                ctx.beginPath();ctx.strokeStyle=`rgba(${a},${.15+idx*.08})`;ctx.lineWidth=2-idx*.5;
+                p.trail.forEach((pt,i)=>{i===0?ctx.moveTo(pt.x*w,pt.y*h):ctx.lineTo(pt.x*w,pt.y*h);});ctx.stroke();
+            });
+        }
+        if (sim==='burst') {
+            ctx.fillStyle='rgba(0,0,0,0.05)'; ctx.fillRect(0,0,w,h);
+            if(Math.random()<.03) for(let i=0;i<15;i++) s.particles.push({x:w/2,y:h/2,vx:(Math.random()-.5)*4,vy:(Math.random()-.5)*4,life:1});
+            s.particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.02;p.life-=.01;});
+            s.particles=s.particles.filter(p=>p.life>0);
+            s.particles.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,2,0,Math.PI*2);ctx.fillStyle=`rgba(${a},${p.life*.6})`;ctx.fill();});
+        }
+        if (sim==='fire') {
+            ctx.fillStyle='rgba(0,0,0,0.08)'; ctx.fillRect(0,0,w,h);
+            s.flames.forEach(f=>{
+                f.y+=f.vy; f.x+=Math.sin(t*3+f.life*10)*.003; f.life-=.008;
+                if(f.life<=0){f.y=1;f.x=.3+Math.random()*.4;f.life=1;f.vy=-.005-.01*Math.random();}
+                const r=s.c[0], g=Math.max(0,s.c[1]*f.life), b=Math.max(0,s.c[2]*f.life*.5);
+                ctx.beginPath();ctx.arc(f.x*w,f.y*h,f.size*f.life,0,Math.PI*2);
+                ctx.fillStyle=`rgba(${r},${g|0},${b|0},${f.life*.5})`;ctx.fill();
+            });
+        }
+        if (sim==='curves') {
+            ctx.fillStyle='rgba(0,0,0,0.06)'; ctx.fillRect(0,0,w,h);
+            s.phase+=.02;
+            for(let i=0;i<5;i++){
+                ctx.beginPath();ctx.strokeStyle=`rgba(${a},${.15+i*.05})`;ctx.lineWidth=1;
+                for(let x=0;x<w;x+=3){
+                    const y=h/2+Math.sin(x*.008+s.phase+i*.5)*50*Math.sin(t*.5+i)+Math.cos(x*.012+t+i)*20;
+                    x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+                }ctx.stroke();
+            }
+        }
+
+        // ── PLASTICA ──
+        if (sim==='pencil') {
+            ctx.fillStyle='rgba(0,0,0,0.01)'; ctx.fillRect(0,0,w,h);
+            if(s.lines.length===0||Math.random()<.01){
+                s.lines.push({x:Math.random()*w,y:Math.random()*h,pts:[],age:0});
+                if(s.lines.length>8){s.lines.shift();ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(0,0,w,h);}
+            }
+            const curr=s.lines[s.lines.length-1];
+            if(curr.pts.length<40){
+                const nx=curr.x+(Math.random()-.5)*20;const ny=curr.y+(Math.random()-.5)*20;
+                ctx.beginPath();ctx.moveTo(curr.x,curr.y);ctx.lineTo(nx,ny);
+                ctx.strokeStyle=`rgba(${a},0.3)`;ctx.lineWidth=.5+Math.random();ctx.stroke();
+                curr.x=nx;curr.y=ny;curr.pts.push({x:nx,y:ny});
+            }
+        }
+        if (sim==='paint') {
+            ctx.fillStyle='rgba(0,0,0,0.005)'; ctx.fillRect(0,0,w,h);
+            if(Math.random()<.04) s.drops.push({x:Math.random()*w,y:Math.random()*h,r:3+Math.random()*15,hue:Math.random()*60-30});
+            if(s.drops.length>30){s.drops.shift();ctx.fillStyle='rgba(0,0,0,.05)';ctx.fillRect(0,0,w,h);}
+            s.drops.forEach(d=>{
+                d.r+=.1;
+                const hShift=d.hue;
+                ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+                ctx.fillStyle=`rgba(${Math.min(255,s.c[0]+hShift|0)},${s.c[1]|0},${Math.min(255,s.c[2]+hShift*2|0)},0.04)`;ctx.fill();
+            });
+        }
+        if (sim==='wireframe') {
+            ctx.fillStyle='rgba(0,0,0,0.2)'; ctx.fillRect(0,0,w,h);
+            s.rot.x+=.01;s.rot.y+=.007;
+            // icosahedron vertices
+            const phi=(1+Math.sqrt(5))/2, sc=35, cx=w/2, cy=h/2;
+            const verts=[[-1,phi,0],[1,phi,0],[-1,-phi,0],[1,-phi,0],[0,-1,phi],[0,1,phi],[0,-1,-phi],[0,1,-phi],[phi,0,-1],[phi,0,1],[-phi,0,-1],[-phi,0,1]];
+            const edges=[[0,1],[0,5],[0,7],[0,10],[0,11],[1,5],[1,7],[1,8],[1,9],[2,3],[2,4],[2,6],[2,10],[2,11],[3,4],[3,6],[3,8],[3,9],[4,5],[4,9],[4,11],[5,9],[5,11],[6,7],[6,8],[6,10],[7,8],[7,10],[8,9],[10,11]];
+            const proj=verts.map(([x,y,z])=>{
+                let x1=x*Math.cos(s.rot.y)-z*Math.sin(s.rot.y), z1=x*Math.sin(s.rot.y)+z*Math.cos(s.rot.y);
+                let y1=y*Math.cos(s.rot.x)-z1*Math.sin(s.rot.x);
+                return [cx+x1*sc,cy+y1*sc];
+            });
+            ctx.strokeStyle=`rgba(${a},0.35)`;ctx.lineWidth=1;
+            edges.forEach(([i,j])=>{ctx.beginPath();ctx.moveTo(proj[i][0],proj[i][1]);ctx.lineTo(proj[j][0],proj[j][1]);ctx.stroke();});
+            proj.forEach(p=>{ctx.beginPath();ctx.arc(p[0],p[1],2,0,Math.PI*2);ctx.fillStyle=`rgba(${a},0.6)`;ctx.fill();});
+        }
+        if (sim==='mosaic') {
+            ctx.fillStyle='rgba(0,0,0,0.05)'; ctx.fillRect(0,0,w,h);
+            const tw=w/6, th=h/4;
+            s.tiles.forEach(tl=>{
+                const brightness=.1+.15*Math.sin(t+tl.pulse);
+                ctx.fillStyle=`rgba(${a},${brightness})`;
+                ctx.fillRect(tl.x*tw+2,tl.y*th+2,tw-4,th-4);
+            });
+        }
+
+        // ── EMPRENDIMIENTO ──
+        if (sim==='chart') {
+            ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h);
+            const bw=w/14, margin=20;
+            s.vals.push(Math.max(.1,Math.min(.9,s.vals[s.vals.length-1]+(Math.random()-.45)*.1)));
+            if(s.vals.length>12)s.vals.shift();
+            ctx.strokeStyle=`rgba(${a},0.1)`;ctx.lineWidth=.5;
+            for(let i=0;i<5;i++){const y=margin+i*(h-margin*2)/4;ctx.beginPath();ctx.moveTo(margin,y);ctx.lineTo(w-margin,y);ctx.stroke();}
+            ctx.beginPath();ctx.strokeStyle=`rgba(${a},0.6)`;ctx.lineWidth=2;
+            s.vals.forEach((v,i)=>{const x=margin+i*(w-margin*2)/11,y=h-margin-v*(h-margin*2);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+            ctx.stroke();
+            // fill under
+            ctx.lineTo(margin+(s.vals.length-1)*(w-margin*2)/11,h-margin);ctx.lineTo(margin,h-margin);ctx.closePath();
+            ctx.fillStyle=`rgba(${a},0.05)`;ctx.fill();
+        }
+        if (sim==='lightbulb') {
+            ctx.fillStyle='rgba(0,0,0,0.08)'; ctx.fillRect(0,0,w,h);
+            const cx=w/2, cy=h/2, pulse=.5+.5*Math.sin(t*2);
+            // glow
+            const grad=ctx.createRadialGradient(cx,cy,10,cx,cy,80);
+            grad.addColorStop(0,`rgba(${a},${.15*pulse})`);grad.addColorStop(1,'rgba(0,0,0,0)');
+            ctx.fillStyle=grad;ctx.fillRect(0,0,w,h);
+            // bulb outline
+            ctx.beginPath();ctx.arc(cx,cy-10,25,Math.PI*.8,Math.PI*.2);
+            ctx.lineTo(cx+10,cy+20);ctx.lineTo(cx-10,cy+20);ctx.closePath();
+            ctx.strokeStyle=`rgba(${a},${.3+pulse*.3})`;ctx.lineWidth=1.5;ctx.stroke();
+            // rays
+            s.rays.forEach(r=>{
+                const len=30+pulse*20+r.len*50;
+                ctx.beginPath();ctx.moveTo(cx+Math.cos(r.angle+t*.2)*35,cy-10+Math.sin(r.angle+t*.2)*35);
+                ctx.lineTo(cx+Math.cos(r.angle+t*.2)*len,cy-10+Math.sin(r.angle+t*.2)*len);
+                ctx.strokeStyle=`rgba(${a},${.1+pulse*.1})`;ctx.lineWidth=1;ctx.stroke();
+            });
+        }
+        if (sim==='progress') {
+            ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h);
+            const labels=['Idea','Prototipo','Validacion','Pitch'];
+            s.bars.forEach((b,i)=>{
+                b.p+=(b.target-b.p)*.02;
+                if(Math.abs(b.p-b.target)<.01&&Math.random()<.005)b.target=.3+Math.random()*.7;
+                const y=30+i*(h-60)/3.5, bh=20;
+                ctx.fillStyle=`rgba(${a},0.06)`;ctx.beginPath();ctx.roundRect(60,y,w-80,bh,4);ctx.fill();
+                ctx.fillStyle=`rgba(${a},0.35)`;ctx.beginPath();ctx.roundRect(60,y,Math.max(0,(w-80)*b.p),bh,4);ctx.fill();
+                ctx.fillStyle=`rgba(${a},0.4)`;ctx.font='9px JetBrains Mono';ctx.fillText(labels[i],60,y-6);
+                ctx.fillText(Math.round(b.p*100)+'%',w-40,y+14);
+            });
+        }
+
+        // ── TEATRO ──
+        if (sim==='notes') {
+            ctx.fillStyle='rgba(0,0,0,0.06)'; ctx.fillRect(0,0,w,h);
+            const symbols=['♪','♫','♩'];
+            s.notes.forEach(n=>{
+                n.y+=n.vy; n.x+=Math.sin(t*2+n.x*10)*.002;
+                if(n.y<-.05){n.y=1.05;n.x=Math.random();}
+                ctx.font=`${16+n.type*6}px serif`;ctx.fillStyle=`rgba(${a},${.2+n.y*.3})`;
+                ctx.fillText(symbols[n.type],n.x*w,n.y*h);
+            });
+        }
+        if (sim==='spotlight') {
+            ctx.fillStyle='rgba(0,0,0,0.06)'; ctx.fillRect(0,0,w,h);
+            s.angle+=.015;
+            // two spotlights
+            [0, Math.PI*.7].forEach((offset,i)=>{
+                const cx=w/2+Math.cos(s.angle+offset)*w*.25;
+                const cy=h*.4+Math.sin(s.angle*.7+offset)*h*.15;
+                const grad=ctx.createRadialGradient(cx,cy,0,cx,cy,70+i*20);
+                grad.addColorStop(0,`rgba(${a},${.12-.03*i})`);grad.addColorStop(1,'rgba(0,0,0,0)');
+                ctx.fillStyle=grad;ctx.fillRect(0,0,w,h);
+            });
+            // stage floor
+            ctx.strokeStyle=`rgba(${a},0.08)`;ctx.lineWidth=1;
+            ctx.beginPath();ctx.moveTo(0,h*.75);ctx.lineTo(w,h*.75);ctx.stroke();
+        }
+
+        // ── OTRAS ──
+        if (sim==='shutter') {
+            ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h);
+            s.aperture=(s.aperture+.015)%(Math.PI*2);
+            const cx=w/2,cy=h/2, open=.3+.7*Math.abs(Math.sin(s.aperture));
+            const blades=6, maxR=60;
+            for(let i=0;i<blades;i++){
+                const ang=(i/blades)*Math.PI*2+t*.1;
+                const r=maxR*open;
+                ctx.beginPath();
+                ctx.moveTo(cx+Math.cos(ang)*r*.3,cy+Math.sin(ang)*r*.3);
+                ctx.lineTo(cx+Math.cos(ang-.3)*maxR,cy+Math.sin(ang-.3)*maxR);
+                ctx.lineTo(cx+Math.cos(ang+.3)*maxR,cy+Math.sin(ang+.3)*maxR);
+                ctx.closePath();
+                ctx.fillStyle=`rgba(${a},${.08+.05*Math.sin(t+i)})`;ctx.fill();
+                ctx.strokeStyle=`rgba(${a},0.3)`;ctx.lineWidth=1;ctx.stroke();
+            }
+            ctx.beginPath();ctx.arc(cx,cy,maxR,0,Math.PI*2);ctx.strokeStyle=`rgba(${a},0.2)`;ctx.stroke();
+            ctx.beginPath();ctx.arc(cx,cy,maxR*.3*open,0,Math.PI*2);ctx.strokeStyle=`rgba(${a},0.4)`;ctx.stroke();
+        }
+        if (sim==='soundbars') {
+            ctx.fillStyle='rgba(0,0,0,0.15)'; ctx.fillRect(0,0,w,h);
+            const bw=w/s.bars.length;
+            s.bars.forEach((v,i)=>{
+                s.bars[i]+=(Math.sin(t*3+i*.5)*.5+.5-v)*.1;
+                const bh=s.bars[i]*h*.6;
+                ctx.fillStyle=`rgba(${a},${.2+s.bars[i]*.3})`;
+                ctx.fillRect(i*bw+2,h/2-bh/2,bw-4,bh);
+            });
+        }
+        if (sim==='sparkles') {
+            ctx.fillStyle='rgba(0,0,0,0.06)'; ctx.fillRect(0,0,w,h);
+            // spiral
+            s.stars.forEach(st=>{
+                st.s+=.02*st.spd;
+                const b=(.5+.5*Math.sin(st.s));
+                const cx=st.x*w, cy=st.y*h;
+                ctx.fillStyle=`rgba(${a},${b*.6})`;
+                ctx.beginPath();ctx.arc(cx,cy,1+b*2,0,Math.PI*2);ctx.fill();
+                // cross
+                ctx.strokeStyle=`rgba(${a},${b*.3})`;ctx.lineWidth=.5;
+                const len=b*8;
+                ctx.beginPath();ctx.moveTo(cx-len,cy);ctx.lineTo(cx+len,cy);ctx.stroke();
+                ctx.beginPath();ctx.moveTo(cx,cy-len);ctx.lineTo(cx,cy+len);ctx.stroke();
+            });
+        }
+        if (sim==='weave') {
+            ctx.fillStyle='rgba(0,0,0,0.1)'; ctx.fillRect(0,0,w,h);
+            s.offset+=.3;
+            const step=16;
+            for(let x=0;x<w;x+=step){
+                const wave=Math.sin((x+s.offset)*.05)*3;
+                ctx.strokeStyle=`rgba(${a},${.15+.05*Math.sin(x*.1+t)})`;ctx.lineWidth=1;
+                ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x+wave,h);ctx.stroke();
+            }
+            for(let y=0;y<h;y+=step){
+                const wave=Math.sin((y+s.offset*.7)*.05)*3;
+                ctx.strokeStyle=`rgba(${a},${.1+.05*Math.sin(y*.1+t)})`;ctx.lineWidth=1;
+                ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y+wave);ctx.stroke();
+            }
+        }
+    });
+
+    requestAnimationFrame(animate);
+}
+
+window.addEventListener('load', () => { init(); animate(); });
+window.addEventListener('resize', () => { Object.keys(states).forEach(k=>delete states[k]); init(); });
+
+// Nav scroll
+const sects=document.querySelectorAll('section[id]');
+window.addEventListener('scroll',()=>{
+    let cur='';sects.forEach(s=>{if(scrollY>=s.offsetTop-160)cur=s.id;});
+    document.querySelectorAll('.nav-link').forEach(a=>{
+        const active=a.getAttribute('href')==='#'+cur;
+        a.classList.toggle('bg-gray-800',active);a.classList.toggle('text-white',active);
+    });
+});
+document.querySelectorAll('.nav-link').forEach(a=>a.addEventListener('click',e=>{
+    e.preventDefault();document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'});
+}));
+</script>
+</body>
+</html>
